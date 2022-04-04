@@ -1,0 +1,21 @@
+{
+  "name": "wetube",
+  "version": "1.0.0",
+  "description": "The best way to watch videos.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Min9ithub/wetube.git"
+  },
+  "scripts": {
+    "win": "node index.js"
+  },
+  "author": "Minki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Min9ithub/wetube/issues"
+  },
+  "homepage": "https://github.com/Min9ithub/wetube#readme",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
