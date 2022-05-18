@@ -6,8 +6,8 @@
 /search -> Search
 
 /users/logout -> Log Out
-/users/edit -> Edit MY Profile
-/users/remove -> Remove MY Profile
+/users/edit -> Edit My Profile
+/users/remove -> Remove My Profile
 /users/:id -> See user
 
 /videos/upload -> Upload Video
