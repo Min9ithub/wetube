@@ -35,6 +35,7 @@ export const postJoin = async (req, res) => {
   }
   return res.redirect("/login");
 };
+
 export const getLogin = (req, res) =>
   res.render("login", { pageTitle: "Login" });
 
