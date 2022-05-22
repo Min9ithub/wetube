@@ -108,7 +108,7 @@ export const finishGithubLogin = async (req, res) => {
       })
     ).json();
     const email = emailData.find(
-      (email) => email.primary === true && email.verified === ture
+      (email) => email.primary === true && email.verified === true
     );
     if (!email) {
       return res.redirect("/login");
