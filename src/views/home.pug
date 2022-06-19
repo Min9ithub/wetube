@@ -2,6 +2,7 @@ extends base
 include mixins/video
 
 block content
+    //videos는 controller에 있는 변수와 이름이 같아야함 potato는 videos의 각각의 item일뿐
     each potato in videos
         +video(potato)
     else
