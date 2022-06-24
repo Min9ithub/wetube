@@ -8,7 +8,6 @@
 /search -> Search
 
 <!-- userRouter -->
-
 /users/logout -> Log Out
 /users/edit -> Edit My Profile
 /users/remove -> Remove My Profile
