@@ -14,7 +14,6 @@
 /users/:id -> See user
 
 <!-- videoRouter -->
-
 /videos/upload -> Upload Video
 /videos/:id -> See video
 /videos/:id/edit -> Edit video
