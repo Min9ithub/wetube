@@ -1,3 +1,5 @@
+// Model이 있는 이유 : Database가 어떤 식으로 생겼는지 대강 알려줌
+
 import mongoose from "mongoose";
 
 const videoSchema = new mongoose.Schema({
