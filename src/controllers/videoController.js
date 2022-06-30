@@ -7,6 +7,7 @@ Video.find({}, (error, videos) => {
 */
 
 export const home = async (req, res) => {
+  // Video.find({}) -> {} 안이 비어있으면 모든 형식을 찾는다는 것을 뜻한다.
   const videos = await Video.find({}).sort({ createdAt: "desc" });
   return res.status(404).render("home", { pageTitle: "Home", videos });
 };
