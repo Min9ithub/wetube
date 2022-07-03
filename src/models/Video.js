@@ -13,6 +13,7 @@ const videoSchema = new mongoose.Schema({
   },
 });
 
+// formatHashtags라는 메소드 만들기
 videoSchema.static("formatHashtags", function (hashtags) {
   return hashtags
     .split(",")
