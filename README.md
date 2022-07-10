@@ -8,13 +8,15 @@
 /search -> Search
 
 <!-- userRouter -->
+
 /users/logout -> Log Out
 /users/edit -> Edit My Profile
 /users/remove -> Remove My Profile
 /users/:id -> See user
 
 <!-- videoRouter -->
+
 /videos/upload -> Upload Video
-/videos/:id -> See video
+/videos/:id -> See Video
 /videos/:id/edit -> Edit video
 /videos/:id/delete -> Delete video
