@@ -24,14 +24,14 @@ export const postJoin = async (req, res) => {
   try {
     await User.create({
       name,
-      username,
       email,
+      username,
       password,
       location,
     });
   } catch (error) {
     return res.status(400).render("join", {
-      pageTitle: "Upload Video",
+      pageTitle,
       errorMessage: error._message,
     });
   }
