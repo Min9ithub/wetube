@@ -82,7 +82,6 @@ export const finishGithubLogin = async (req, res) => {
     client_secret: process.env.GH_SECRET,
     code: req.query.code,
   };
-
   const params = new URLSearchParams(config).toString();
   const finalUrl = `${baseUrl}?${params}`;
   const tokenRequest = await (
@@ -96,19 +95,16 @@ export const finishGithubLogin = async (req, res) => {
   if ("access_token" in tokenRequest) {
     const { access_token } = tokenRequest;
     const apiUrl = "https://api.github.com";
-
     const userData = await (
       await fetch(`${apiUrl}/user`, {
         headers: { Authorization: `token ${access_token}` },
       })
     ).json();
-
     const emailData = await (
       await fetch(`${apiUrl}/user/emails`, {
         headers: { Authorization: `token ${access_token}` },
       })
     ).json();
-
     const emailObj = emailData.find(
       (email) => email.primary === true && email.verified === true
     );
@@ -116,13 +112,10 @@ export const finishGithubLogin = async (req, res) => {
       //set notification
       return res.redirect("/login");
     }
-
-    const existingUser = await User.findOne({ email: emailObj.email });
-    if (existingUser) {
-      req.session.loggedIn = true;
-      req.session.user = existingUser;
-      return res.redirect("/");
-    } else {
+    // User가 존재하면(웹사이트에서 Join으로 만든 User든 Github에서 만든 User이든)
+    // User가 존재하지 않다면 User 생성 후에 로그인 후, home으로 redirect
+    let user = await User.findOne({ email: emailObj.email });
+    if (!user) {
       const user = await User.create({
         avatarUrl: userData.avatar_url,
         name: userData.name,
@@ -132,13 +125,46 @@ export const finishGithubLogin = async (req, res) => {
         socialOnly: true,
         location: userData.location,
       });
-      req.session.loggedIn = true;
-      req.session.user = user;
-      return res.redirect("/");
     }
+    // email이 같다면 존재하고 있는 User로 로그인시켜준다. 그후에 home으로 redirect
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
   } else {
     return res.redirect("/login");
   }
+};
+
+export const startKakaoLogin = (req, res) => {
+  const baseUrl = "https://kauth.kakao.com/oauth/authorize";
+  const config = {
+    client_id: process.env.KA_CLIENT,
+    redirect_uri: "http://localhost:4000/users/kakao/finish",
+    response_type: "code",
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  return res.redirect(finalUrl);
+};
+export const finishKakaoLogin = async (req, res) => {
+  const baseUrl = "https://kauth.kakao.com/oauth/token";
+  const config = {
+    grant_type: "authorization_code",
+    client_id: process.env.KA_CLIENT,
+    redirect_uri: "http://localhost:4000/users/kakao/finish",
+    code: req.query.code,
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  const tokenRequest = await (
+    await fetch(finalUrl, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+    })
+  ).json();
+  return res.redirect(finalUrl);
 };
 
 export const logout = (req, res) => {
