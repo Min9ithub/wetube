@@ -25,6 +25,9 @@ app.use(
 );
 
 app.use(localsMiddleware);
+// avatarUrl을 브라우저에 나타내기 위한 코드
+// uploads 폴더를 노출시킴
+app.use("/uploads", express.static("uploads"));
 app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
