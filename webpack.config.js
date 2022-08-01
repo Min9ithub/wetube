@@ -1,12 +1,15 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path");
 
+const BASE_JS = "./src/client/js/";
+
 module.exports = {
   // client => 내가 코딩할 폴더, webpack이 실행되기 전 파일들이 담긴 폴더
   entry: {
-    main: "./src/client/js/main.js",
-    videoPlayer: "./src/client/js/videoPlayer.js",
-    recorder: "./src/client/js/recorder.js",
+    main: BASE_JS + "main.js",
+    videoPlayer: BASE_JS + "videoPlayer.js",
+    recorder: BASE_JS + "recorder.js",
+    commentSection: BASE_JS + "commentSection.js",
   },
   mode: "development",
   watch: true,
