@@ -7,6 +7,7 @@
     "url": "git+https://github.com/Min9ithub/wetube.git"
   },
   "scripts": {
+    "build:server": "babel src/ -d build",
     "dev:server": "nodemon",
     "dev:assets": "webpack"
   },
@@ -33,7 +34,8 @@
     "regenerator-runtime": "^0.13.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.8",
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.18.10",
     "@babel/node": "^7.16.8",
     "@babel/preset-env": "^7.16.11",
     "babel-loader": "^8.2.5",
