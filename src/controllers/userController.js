@@ -117,7 +117,7 @@ export const finishGithubLogin = async (req, res) => {
     // User가 존재하지 않다면 User 생성 후에 로그인 후, home으로 redirect
     let user = await User.findOne({ email: emailObj.email });
     if (!user) {
-      const user = await User.create({
+      user = await User.create({
         avatarUrl: userData.avatar_url,
         name: userData.name,
         username: userData.login,
