@@ -1,6 +1,7 @@
 import User from "../models/User";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
+import Video from "../models/Video";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
@@ -135,49 +136,124 @@ export const finishGithubLogin = async (req, res) => {
   }
 };
 
-export const startKakaoLogin = (req, res) => {
-  const baseUrl = "https://kauth.kakao.com/oauth/authorize";
-  const config = {
-    client_id: process.env.KA_CLIENT,
-    redirect_uri: "http://localhost:4000/users/kakao/finish",
-    response_type: "code",
-  };
-  const params = new URLSearchParams(config).toString();
-  const finalUrl = `${baseUrl}?${params}`;
-  return res.redirect(finalUrl);
-};
-export const finishKakaoLogin = async (req, res) => {
-  const baseUrl = "https://kauth.kakao.com/oauth/token";
-  const config = {
-    grant_type: "authorization_code",
-    client_id: process.env.KA_CLIENT,
-    redirect_uri: "http://localhost:4000/users/kakao/finish",
-    code: req.query.code,
-  };
-  const params = new URLSearchParams(config).toString();
-  const finalUrl = `${baseUrl}?${params}`;
-  const tokenRequest = await (
-    await fetch(finalUrl, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-    })
-  ).json();
-  return res.redirect(finalUrl);
-};
+// export const startKakaoLogin = (req, res) => {
+//   const baseUrl = "https://kauth.kakao.com/oauth/authorize";
+//   const config = {
+//     client_id: process.env.KA_CLIENT,
+//     redirect_uri: "http://localhost:4000/users/kakao/finish",
+//     response_type: "code",
+//   };
+//   const params = new URLSearchParams(config).toString();
+//   const finalUrl = `${baseUrl}?${params}`;
+//   return res.redirect(finalUrl);
+// };
+// export const finishKakaoLogin = async (req, res) => {
+//   const baseUrl = "https://kauth.kakao.com/oauth/token";
+//   const config = {
+//     grant_type: "authorization_code",
+//     client_id: process.env.KA_CLIENT,
+//     redirect_uri: "http://localhost:4000/users/kakao/finish",
+//     code: req.query.code,
+//   };
+//   const params = new URLSearchParams(config).toString();
+//   const finalUrl = `${baseUrl}?${params}`;
+//   const tokenRequest = await (
+//     await fetch(finalUrl, {
+//       method: "POST",
+//       headers: {
+//         Accept: "application/json",
+//       },
+//     })
+//   ).json();
+//   return res.redirect(finalUrl);
+// };
 
 export const logout = (req, res) => {
   req.session.destroy();
+  // req.flash("info", "Bye Bye");
   return res.redirect("/");
 };
 export const getEdit = (req, res) => {
   return res.render("edit-profile", {
     pageTitle: "Edit Profile",
-    user: req.session.user,
   });
 };
-export const postEdit = (req, res) => {
-  return res.render("edit-profile");
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: { _id, avatarUrl },
+    },
+    body: { name, email, username, location },
+    file,
+  } = req;
+  console.log(file);
+  // const id = req.session.user.id
+  // const { name, email, username, location } = req.body;
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      avatarUrl: file ? file.path : avatarUrl,
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true }
+  );
+  req.session.user = updatedUser;
+  return res.redirect("/users/edit");
 };
-export const see = (req, res) => res.send("See User");
+
+export const getChangePassword = (req, res) => {
+  if (req.session.user.socialOnly === true) {
+    req.flash("error", "Can't change password.");
+    return res.redirect("/");
+  }
+  return res.render("users/change-password", { pageTitle: "Change Password" });
+};
+export const postChangePassword = async (req, res) => {
+  // send notification
+  const pageTitle = "Change Password";
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { oldPassword, newPassword, newPasswordConfirmation },
+  } = req;
+  const user = await User.findById(_id);
+  const ok = await bcrypt.compare(oldPassword, user.password);
+  if (!ok) {
+    return res.status(400).render("users/change-password", {
+      pageTitle,
+      errorMessage: "The current password is incorrect",
+    });
+  }
+  if (newPassword !== newPasswordConfirmation) {
+    return res.status(400).render("users/change-password", {
+      pageTitle,
+      errorMessage: "The Password does not match the confirmation",
+    });
+  }
+  user.password = newPassword;
+  await user.save();
+  req.flash("info", "Password updated");
+  return res.redirect("/users/logout");
+};
+
+export const see = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id).populate({
+    path: "videos",
+    populate: {
+      path: "owner",
+      model: "User",
+    },
+  });
+  if (!user) {
+    return res.status(404).render("404", { pageTitle: "User not found." });
+  }
+  return res.render("users/profile", {
+    pageTitle: user.name,
+    user,
+  });
+};
