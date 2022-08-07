@@ -50,7 +50,6 @@ export const postEdit = async (req, res) => {
   } = req.session;
   const { id } = req.params;
   const { title, description, hashtags } = req.body;
-  // Model.exists(_id : id) --> id의 존재 여부만을 확인한다.-> 아랫줄에 !video가 true인지 false인지 나타내기 위해서
   const video = await Video.exists({ _id: id });
   if (!video) {
     req.flash("error", "You are not the owner of the video");
@@ -78,12 +77,13 @@ export const postUpload = async (req, res) => {
   } = req.session;
   const { video, thumb } = req.files;
   const { title, description, hashtags } = req.body;
+  const isHeroku = process.env.NODE_ENV === "production";
   try {
     const newVideo = await Video.create({
       title,
       description,
-      fileUrl: video[0].location,
-      thumbUrl: thumb[0].location,
+      fileUrl: isHeroku ? video[0].location : video[0].path,
+      thumbUrl: isHeroku ? thumb[0].location : video[0].path,
       owner: _id,
       hashtags: Video.formatHashtags(hashtags),
     });
