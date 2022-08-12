@@ -32,8 +32,8 @@ userRouter
   .all(protectorMiddleware)
   .get(getChangePassword)
   .post(postChangePassword);
-// userRouter.get("/kakao/start", publicOnlyMiddleware, startKakaoLogin);
-// userRouter.get("/kakao/finish", publicOnlyMiddleware, finishKakaoLogin);
+userRouter.get("/kakao/start", publicOnlyMiddleware, startKakaoLogin);
+userRouter.get("/kakao/finish", publicOnlyMiddleware, finishKakaoLogin);
 userRouter.get("/:id", see);
 
 export default userRouter;
