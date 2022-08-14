@@ -22,13 +22,11 @@ const downloadFile = (fileUrl, fileName) => {
 
 const handleDownload = async () => {
   actionBtn.removeEventListener("click", handleDownload);
-
   actionBtn.innerText = "Transcoding...";
-
   actionBtn.disabled = true;
 
   const ffmpeg = createFFmpeg({
-    corePath: "https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js",
+    corePath: "https://unpkg.com/@ffmpeg/core@0.8.5/dist/ffmpeg-core.js",
     log: true,
   });
   await ffmpeg.load();

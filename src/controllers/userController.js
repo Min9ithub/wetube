@@ -2,6 +2,7 @@ import User from "../models/User";
 import fetch from "node-fetch";
 import bcrypt from "bcrypt";
 import Video from "../models/Video";
+import { token } from "morgan";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
@@ -136,37 +137,72 @@ export const finishGithubLogin = async (req, res) => {
   }
 };
 
-// export const startKakaoLogin = (req, res) => {
-//   const baseUrl = "https://kauth.kakao.com/oauth/authorize";
-//   const config = {
-//     client_id: process.env.KA_CLIENT,
-//     redirect_uri: "http://localhost:4000/users/kakao/finish",
-//     response_type: "code",
-//   };
-//   const params = new URLSearchParams(config).toString();
-//   const finalUrl = `${baseUrl}?${params}`;
-//   return res.redirect(finalUrl);
-// };
-// export const finishKakaoLogin = async (req, res) => {
-//   const baseUrl = "https://kauth.kakao.com/oauth/token";
-//   const config = {
-//     grant_type: "authorization_code",
-//     client_id: process.env.KA_CLIENT,
-//     redirect_uri: "http://localhost:4000/users/kakao/finish",
-//     code: req.query.code,
-//   };
-//   const params = new URLSearchParams(config).toString();
-//   const finalUrl = `${baseUrl}?${params}`;
-//   const tokenRequest = await (
-//     await fetch(finalUrl, {
-//       method: "POST",
-//       headers: {
-//         Accept: "application/json",
-//       },
-//     })
-//   ).json();
-//   return res.redirect(finalUrl);
-// };
+export const startKakaoLogin = (req, res) => {
+  const baseUrl = "https://kauth.kakao.com/oauth/authorize";
+  const config = {
+    client_id: process.env.KA_CLIENT,
+    redirect_uri: "http://localhost:4000/users/kakao/finish",
+    response_type: "code",
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  return res.redirect(finalUrl);
+};
+
+export const finishKakaoLogin = async (req, res) => {
+  const baseUrl = "https://kauth.kakao.com/oauth/token";
+  const config = {
+    grant_type: "authorization_code",
+    client_id: process.env.KA_CLIENT,
+    redirect_uri: "http://localhost:4000/users/kakao/finish",
+    code: req.query.code,
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+
+  const data = await fetch(finalUrl, {
+    method: "POST",
+    headers: {
+      "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+    },
+  });
+  const json = await data.json();
+
+  if ("access_token" in json) {
+    const { access_token } = json;
+    const apiUrl = "https://kapi.kakao.com";
+
+    const userData = await (
+      await fetch(`${apiUrl}/v2/user/me`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
+      })
+    ).json();
+
+    const accountData = userData.kakao_account;
+
+    let user = await User.findOne({ email: accountData.email });
+    if (!user) {
+      user = await User.create({
+        avatarUrl: accountData.profile.profile_image_url,
+        name: accountData.profile.nickname,
+        username: "",
+        email: accountData.email,
+        password: "",
+        socialOnly: true,
+        location: "",
+      });
+    }
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
+  } else {
+    return res.redirect("/login");
+  }
+};
 
 export const logout = (req, res) => {
   req.session.destroy();

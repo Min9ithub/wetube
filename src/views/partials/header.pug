@@ -19,10 +19,10 @@ header
                             span 😀
                         else
                             if loggedInUser.avatarUrl
-                                if loggedInUser.avatarUrl.includes("amazonaws")
-                                    img.header__avatar(src=loggedInUser.avatarUrl)
+                                if loggedInUser.avatarUrl.includes("http")
+                                    img.header__avatar(src=loggedInUser.avatarUrl, crossorigin="use-credentials")
                                 else 
-                                    img.header__avatar(src= "/" + loggedInUser.avatarUrl)
+                                    img.header__avatar(src= "/" + loggedInUser.avatarUrl, crossorigin)
             else
                 li
                     a(href="/login") Login
