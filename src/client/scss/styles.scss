@@ -26,8 +26,8 @@ a {
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  background-color: $bg;
-  color: white;
+  // background-color: #fff;
+  // color: #000;
 }
 
 main {
@@ -63,5 +63,16 @@ main {
   &.error {
     background-color: tomato;
     color: white;
+  }
+}
+
+.themeBtn__container {
+  text-align: center;
+  margin: 50px;
+  button {
+    font-size: 30px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
   }
 }

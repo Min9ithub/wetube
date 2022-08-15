@@ -18,6 +18,11 @@
     }
   }
 }
+
+.video__add-comments button {
+  cursor: pointer;
+}
+
 .video__comments {
   display: flex;
   flex-direction: column;
@@ -31,5 +36,8 @@
     background-color: white;
     color: black;
     margin-bottom: 10px;
+  }
+  .remove__comment {
+    cursor: pointer;
   }
 }
