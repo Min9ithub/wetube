@@ -26,7 +26,7 @@ const handleDownload = async () => {
   actionBtn.disabled = true;
 
   const ffmpeg = createFFmpeg({
-    corePath: "https://unpkg.com/@ffmpeg/core@0.8.5/dist/ffmpeg-core.js",
+    // corePath: "https://unpkg.com/@ffmpeg/core@0.8.5/dist/ffmpeg-core.js",
     log: true,
   });
   await ffmpeg.load();
