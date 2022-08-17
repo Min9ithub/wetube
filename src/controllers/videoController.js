@@ -171,7 +171,6 @@ export const removeComment = async (req, res) => {
   } = req;
 
   const comment = await Comment.findById(id).populate("owner");
-
   const video = await Video.findById(id);
   if (!video) {
     return res.sendStatus(404);
