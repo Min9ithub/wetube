@@ -51,10 +51,10 @@ export const postEdit = async (req, res) => {
   const { title, description, hashtags } = req.body;
   const video = await Video.exists({ _id: id });
   if (!video) {
-    req.flash("error", "You are not the owner of the video");
     return res.render("404", { pageTitle: "Video not found" });
   }
   if (String(video.owner) !== String(_id)) {
+    req.flash("error", "You are not the owner of the video");
     return res.status(403).redirect("/");
   }
   await Video.findByIdAndUpdate(id, {
@@ -157,27 +157,7 @@ export const createComment = async (req, res) => {
     owner: user._id,
     video: id,
   });
-  video.comments.push(comment._id);
-  video.save();
+  await video.comments.push(comment._id);
+  await video.save();
   return res.status(201).json({ newCommentId: comment._id });
-};
-
-export const removeComment = async (req, res) => {
-  const {
-    session: {
-      user: { _id },
-    },
-    params: { id },
-  } = req;
-
-  const comment = await Comment.findById(id).populate("owner");
-  const video = await Video.findById(id);
-  if (!video) {
-    return res.sendStatus(404);
-  }
-  if (String(comment.owner._id) !== String(_id)) {
-    return res.status(403).redirect("/");
-  }
-  await Comment.findByIdAndDelete(id);
-  return res.status(201).json({ newCommentId: id });
 };
