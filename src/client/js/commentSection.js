@@ -1,7 +1,8 @@
 const videoContainer = document.getElementById("videoContainer");
 const form = document.getElementById("commentForm");
-const removeCommentBtn = document.querySelectorAll("#removeCommentBtn");
+const removeCommentBtn = document.getElementById("removeCommentBtn");
 
+// 댓글을 추가하는 section, watch.pug에 있는 video__comments와 똑같이 만들어주는 역할을 한다.
 const addComment = (text, id) => {
   const videoComments = document.querySelector(".video__comments ul");
   const newComment = document.createElement("li");
@@ -24,7 +25,6 @@ const handleSubmit = async (event) => {
   const textarea = form.querySelector("textarea");
   const text = textarea.value;
   const videoId = videoContainer.dataset.id;
-  console.log(videoId);
   if (text === "") {
     return;
   }
@@ -42,12 +42,18 @@ const handleSubmit = async (event) => {
   }
 };
 
-// const handleremoveComment = () => {};
+const handleremoveComment = () => {
+  const commentId = videoContainer.dataset.id
+  const response = await fetch(`/api/videos/${commentId}`, {
+    method: "DELETE",
+  });
+
+};
 
 if (form) {
   form.addEventListener("submit", handleSubmit);
 }
 
-// if (removeCommentBtn) {
-//   removeCommentBtn.addEventListener("click", handleremoveComment);
-// }
+if (removeCommentBtn) {
+  removeCommentBtn.addEventListener("click", handleremoveComment);
+}

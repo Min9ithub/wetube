@@ -75,7 +75,6 @@ export const postUpload = async (req, res) => {
     user: { _id },
   } = req.session;
   const { video, thumb } = req.files;
-  console.log(video);
   const { title, description, hashtags } = req.body;
   const isHeroku = process.env.NODE_ENV === "production";
   try {
@@ -159,5 +158,18 @@ export const createComment = async (req, res) => {
   });
   await video.comments.push(comment._id);
   await video.save();
+  //.json({ newCommentId: comment._id }); -> frontend에 새로 생긴 댓글의 id를 보내기 위함
   return res.status(201).json({ newCommentId: comment._id });
+};
+
+export const removeComment = async (req, res) => {
+  const {
+    session: { user },
+    params: { id },
+  } = req;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.sendStatus(404);
+  }
+  await Comment.findByIdAndDelete(id);
 };
