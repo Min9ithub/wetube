@@ -164,12 +164,28 @@ export const createComment = async (req, res) => {
 
 export const removeComment = async (req, res) => {
   const {
-    session: { user },
     params: { id },
+    body: { videoId },
+    session: { user },
   } = req;
-  const video = await Video.findById(id);
+
+  const video = await Video.findById(videoId);
+  console.log(video);
   if (!video) {
     return res.sendStatus(404);
   }
+
+  const commentUser = await User.findById(user._id);
+  if (user.comment.indexOf(id) < 0) {
+    req.flash("info", "Not authorized");
+    return res.sendStatus(403);
+  }
+  commentUser.comment.splice(commentUser.comment.indexOf(id), 1);
+  video.comment.splice(video.comment.indexOf(id), 1);
+  await video.save();
+  await commentUser.save();
   await Comment.findByIdAndDelete(id);
+
+  return res.sendStatus(201);
+  // await Comment.findByIdAndDelete(id);
 };

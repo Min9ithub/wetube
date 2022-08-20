@@ -20,6 +20,12 @@ const addComment = (text, id) => {
   videoComments.prepend(newComment);
 };
 
+const deleteComment = (event) => {
+  const commentContainer = document.querySelector(".video__comments ul");
+  const commentList = event.target.parentNode;
+  commentContainer.removeChild(commentList);
+};
+
 const handleSubmit = async (event) => {
   event.preventDefault();
   const textarea = form.querySelector("textarea");
@@ -42,12 +48,21 @@ const handleSubmit = async (event) => {
   }
 };
 
-const handleremoveComment = () => {
-  const commentId = videoContainer.dataset.id
-  const response = await fetch(`/api/videos/${commentId}`, {
+const handleremoveComment = async (event) => {
+  const commentList = event.target.parentNode;
+  const commentId = commentList.dataset.id;
+  const videoId = videoContainer.dataset.id;
+  const response = await fetch(`/api/videos/${commentId}/delete`, {
     method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ videoId }),
   });
 
+  if (response.status === 201) {
+    deleteComment(event);
+  }
 };
 
 if (form) {
