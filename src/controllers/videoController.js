@@ -103,6 +103,7 @@ export const deleteVideo = async (req, res) => {
   const {
     user: { _id },
   } = req.session;
+
   const video = await Video.findById(id);
   const user = await User.findById(_id);
   if (!video) {
@@ -113,6 +114,8 @@ export const deleteVideo = async (req, res) => {
   }
   // Video.findByIdAndRemove()도 있지만 특별한 이유가 없는 이상 findByIdAndDelete를 사용()
   await Video.findByIdAndDelete(id);
+  user.videos.splice(user.videos.indexOf(id), 1);
+  user.save();
   return res.redirect("/");
 };
 
@@ -165,27 +168,13 @@ export const createComment = async (req, res) => {
 export const removeComment = async (req, res) => {
   const {
     params: { id },
-    body: { videoId },
     session: { user },
   } = req;
-
-  const video = await Video.findById(videoId);
-  console.log(video);
-  if (!video) {
-    return res.sendStatus(404);
-  }
-
-  const commentUser = await User.findById(user._id);
-  if (user.comment.indexOf(id) < 0) {
-    req.flash("info", "Not authorized");
+  const comment = await Comment.findById(id).populate("owner");
+  const ownerId = comment.owner._id.toString();
+  if (ownerId !== user._id) {
     return res.sendStatus(403);
   }
-  commentUser.comment.splice(commentUser.comment.indexOf(id), 1);
-  video.comment.splice(video.comment.indexOf(id), 1);
-  await video.save();
-  await commentUser.save();
   await Comment.findByIdAndDelete(id);
-
-  return res.sendStatus(201);
-  // await Comment.findByIdAndDelete(id);
+  return res.sendStatus(200);
 };
