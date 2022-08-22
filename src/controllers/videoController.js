@@ -170,11 +170,17 @@ export const removeComment = async (req, res) => {
     params: { id },
     session: { user },
   } = req;
+  // const video = await Video.findById(id);
+  // if (!video) {
+  //   return res.sendStatus(404);
+  // }
   const comment = await Comment.findById(id).populate("owner");
   const ownerId = comment.owner._id.toString();
   if (ownerId !== user._id) {
     return res.sendStatus(403);
   }
   await Comment.findByIdAndDelete(id);
+  // video.comments.splice(video.comments.indexOf(id), 1);
+  // video.save();
   return res.sendStatus(200);
 };
