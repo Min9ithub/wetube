@@ -19,6 +19,12 @@
   }
 }
 
+.video__add-comments textarea {
+  width: 30em;
+  height: 5em;
+  resize: none;
+}
+
 .video__add-comments button {
   cursor: pointer;
 }
