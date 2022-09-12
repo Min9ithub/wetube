@@ -8,11 +8,14 @@ header
                     i.fas.fa-search
             if loggedIn
                 li
-                    a(href="/videos/upload") Upload Video
+                    a(href="/videos/upload")
+                        i.fas.fa-video
                 li
-                    a(href="/users/edit") Edit Profile
+                    a(href="/users/edit")
+                        i.fas.fa-user-edit
                 li
-                    a(href="/users/logout") Log out
+                    a(href="/users/logout")
+                        i.fas.fa-sign-out-alt
                 li
                     a(href=`/users/${loggedInUser._id}`)
                         if loggedInUser.avatarUrl === ""
@@ -25,7 +28,9 @@ header
                                     img.header__avatar(src= "/" + loggedInUser.avatarUrl, crossorigin)
             else
                 li
-                    a(href="/login") Login
+                    a(href="/login")
+                        i.fas.fa-sign-in-alt
                 li
-                    a(href="/join").header__btn Join
+                    a(href="/join").header__btn
+                        i.fas.fa-user-plus
             
