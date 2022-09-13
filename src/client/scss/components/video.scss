@@ -5,28 +5,28 @@
     height: 140px;
     border-radius: 7px;
   }
-  .video-mixin__data {
-    padding: 10px 0px;
-    .video-mixin__avatar-title {
-      display: flex;
-      align-items: center;
-      .video-mixin__avatar img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-      }
-      .video-mixin__title {
-        margin-left: 10px;
-        font-size: 14px;
-      }
+}
+.video-mixin__data {
+  padding: 10px 0px;
+  .video-mixin__avatar-title {
+    display: flex;
+    align-items: center;
+    .video-mixin__avatar > img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
     }
-    .video-mixin__user-data {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-      .video-mixin__meta {
-        font-size: 12px;
-      }
+    .video-mixin__title {
+      margin-left: 10px;
+      font-size: 14px;
+    }
+  }
+  .video-mixin__user-data {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    .video-mixin__meta {
+      font-size: 12px;
     }
   }
 }
