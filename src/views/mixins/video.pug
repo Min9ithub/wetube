@@ -7,7 +7,10 @@ mixin video(video)
     div.video-mixin__data
         div.video-mixin__avatar-title
             a(href=`/users/${video.owner._id}`).video-mixin__avatar
-                img(src=video.owner.avatarUrl)
+                if video.owner.avatarUrl.includes("http")
+                    img(src=video.owner.avatarUrl)
+                else
+                    img(src="/" + video.owner.avatarUrl)
             //- span.video-mixin__avatar
             //-     if video.owner.avatarUrl.includes("http")
             //-         img(src=video.owner.avatarUrl)
