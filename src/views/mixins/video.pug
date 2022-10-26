@@ -11,11 +11,6 @@ mixin video(video)
                     img(src=video.owner.avatarUrl)
                 else
                     img(src="/" + video.owner.avatarUrl)
-            //- span.video-mixin__avatar
-            //-     if video.owner.avatarUrl.includes("http")
-            //-         img(src=video.owner.avatarUrl)
-            //-     else 
-            //-         img(src= "/" + video.owner.avatarUrl, crossorigin)
             span.video-mixin__title=video.title
         div.video-mixin__user-data
             div.video-mixin__meta
